@@ -38,12 +38,6 @@ Watch the project in action:
 
 ---
 
-### Screenshots  
-- Dashboard Overview
-- EDA Insights  
-- Model Results
-
-
 ## Acknowledgements
 - Dataset Source: [Mental Health in Tech Survey](https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey)
 - OpenLearn Cohort 1.0 Mentors & Team
