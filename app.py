@@ -4,6 +4,26 @@ import pandas as pd
 import joblib
 import xgboost
 
+from sklearn.base import BaseEstimator, TransformerMixin
+
+class SupportScoreTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self, support_score_cols, value_map):
+        self.support_score_cols = support_score_cols
+        self.value_map = value_map
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X = X.copy()
+        for col in self.support_score_cols:
+            X[f"{col}_scaled"] = X[col].map(self.value_map)
+        scaled_cols = [f"{col}_scaled" for col in self.support_score_cols]
+        X["support_score"] = X[scaled_cols].mean(axis=1)
+        X.drop(columns=self.support_score_cols + scaled_cols, inplace=True)
+        return X
+
+
 # Load models
 df = pd.read_csv("Models & Datasets/cleaned_survey.csv")
 clf_model = joblib.load("Models & Datasets/classification_model.pkl")
@@ -332,5 +352,6 @@ elif menu == "📊 Persona Clustering":
         ### Cluster 7 – Empowered Open Advocates  
         High support scores, confident use of leave, and strong openness. Natural champions for wellness advocacy.
         """)
+
 
     footer()
