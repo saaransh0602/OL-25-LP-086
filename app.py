@@ -147,15 +147,22 @@ elif menu == "📈 Regression Task":
 
     st.markdown("""
     **Models & Results**  
-    | Model               | MAE        | RMSE      | R² Score    |
-    |---------------------|------------|-----------|-------------|
-    | Linear Regression   | 5.890833   | 7.365887  |  -0.036312  |
-    | Random Forest       | 56.401374  | 7.510085  | -0.247727   |
-    | XGBoost             | 52.247160  | 7.228220  | -0.155826   |
+    | Model                          | R² Score   | RMSE      | MAE        |
+    |--------------------------------|------------|-----------|------------|
+    | Random Forest Regressor        | 0.057388   | 7.024998  | 5.547433   |
+    | Random Forest (log-transformed)| 0.052792   | 7.042103  | 5.495858   |
+    | XGBoost (log-transformed)      | 0.051976   | 7.045136  | 5.472915   |
+    | XGBRegressor                   | 0.034114   | 7.111196  | 5.590417   |
+    | Lasso Regression               | 0.025908   | 7.141339  | 5.655088   |
+    | Gradient Boosting Regressor    | 0.018985   | 7.166674  | 5.665793   |
+    | Ridge Regression               | 0.015816   | 7.178238  | 5.690324   |
+    | Support Vector Regressor       | -0.006819  | 7.260316  | 5.683155   |
+    | Linear Regression              | -0.036312  | 7.365887  | 5.890833   |
 
-    🏆 **Best Model**: Linear Regression (by R² score)
+
+    🏆 **Best Model**: Random forest Regressor (by R² score)
     """)
-    st.success("🏆 Linear Regression gives the best R² for age prediction, though all models have low explanatory power.")
+    st.success("🏆 Random Forest gives the best R² for age prediction, though all models have low explanatory power.")
     
     st.divider()
     # st.markdown("### This is a sample predictor of the age of a person given their conditions ⬇️")
@@ -210,15 +217,17 @@ elif menu == "🧮 Classification Task":
     st.header("📌 Classification: Will a person seek treatment?")
     st.markdown("""
     **Models & Results**  
-    | Model                | Accuracy  |
-    |----------------------|-----------|
-    | Logistic Regression  | 0.765182  |
-    | Random Forest        | 0.761134  |
-    | XGBoost              | 0.769231  |
+    | Model                      | Accuracy | F1 Score | ROC-AUC |
+    |----------------------------|----------|----------|---------|
+    | XGBoost                    | 0.717    | 0.701    | 0.807   |
+    | Support Vector Classifier  | 0.717    | 0.704    | 0.803   |
+    | Logistic Regression        | 0.707    | 0.700    | 0.795   |
+    | Random Forest              | 0.702    | 0.693    | 0.793   |
 
-    🏆 **Best Model**: XGBoost (Accuracy: 0.769231)
+
+    🏆 **Best Model**: XGBoost Classifier
     """)
-    st.success("🏆 XGBoost outperforms Logistic Regression and Random Forest for treatment prediction.")
+    st.success("🏆 XGBoost outperforms Logistic Regression, SVM and Random Forest for treatment prediction.")
 
     st.divider()
 
@@ -355,6 +364,7 @@ elif menu == "📊 Persona Clustering":
 
 
     footer()
+
 
 
 
