@@ -305,13 +305,13 @@ elif menu == "📊 Persona Clustering":
     st.divider()
 
     st.markdown("### Here is the comparison (silhouette score) for all the models applied for clustering: ")
-    st.write(" - **K-Means Clustering:** 0.4836\n - **Agglomerative Clustering:** 0.4619\n - **DBSCAN:** 0.2192 (13 DBSCAN Clusters, 2 Noise Points)")
+    st.write(" - **K-Means Clustering:** 0.5407\n - **Agglomerative Clustering:** 0.5291\n - **DBSCAN:** 0.4824 (6 DBSCAN Clusters, 3 Noise Points)")
 
     st.markdown("### ✅ From these scores, we can easily say that `K-Means` is clearly our winner.")
     st.image("Images/algos.png", caption="Clusters formed by the models", use_container_width=True)
 
     st.divider()
-    st.image("Images/comparison.png", caption="Clusters formed by the models", use_container_width=True)
+    st.image("Images/comparison.png", caption="Comparison of the 7 clusters by Features", use_container_width=True)
     st.divider()
 
     st.markdown("### 🧠 These are the different Personas the respondents can be classified into ⬇️")
@@ -365,6 +365,7 @@ elif menu == "📊 Persona Clustering":
 
 
     footer()
+
 
 
 
