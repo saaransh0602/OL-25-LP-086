@@ -23,10 +23,10 @@ build data-driven solutions for:
 ---
 
 ## 🔗 Important Links  
-- **EDA Notebook:** [Link to EDA Notebook](#)
-- **Classification Notebook:** [Link to Classification Notebook](#)
-- **Regression Notebook:** [Link to Regression Notebook](#)
-- **Clustering Notebook:** [Link to Clustering Notebook](#)
+- **EDA Notebook:** [Link to EDA Notebook](https://github.com/saaransh0602/OL-25-LP-086/blob/main/Models%20%26%20Datasets/EDA.ipynb)
+- **Classification Notebook:** [Link to Classification Notebook](https://github.com/saaransh0602/OL-25-LP-086/blob/main/Models%20%26%20Datasets/classification_model.ipynb)
+- **Regression Notebook:** [Link to Regression Notebook](https://github.com/saaransh0602/OL-25-LP-086/blob/main/Models%20%26%20Datasets/regression_model.ipynb)
+- **Clustering Notebook:** [Link to Clustering Notebook](https://github.com/saaransh0602/OL-25-LP-086/blob/main/Models%20%26%20Datasets/clustering.ipynb)
 - **Streamlit App:** [Hosted App Link](https://saaransh-capstone-ol.streamlit.app/)  
 - **Technical Report:** [Link to Medium Blog](#) 
 
