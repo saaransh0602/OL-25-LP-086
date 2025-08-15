@@ -27,14 +27,14 @@ build data-driven solutions for:
 - **Classification Notebook:** [Link to Classification Notebook](#)
 - **Regression Notebook:** [Link to Regression Notebook](#)
 - **Clustering Notebook:** [Link to Clustering Notebook](#)
-- **Streamlit App:** [Hosted App Link](#)  
+- **Streamlit App:** [Hosted App Link](https://saaransh-capstone-ol.streamlit.app/)  
 - **Technical Report:** [Link to Medium Blog](#) 
 
 ## Demo  
 
 Watch the project in action:  
 
-- **Streamlit App Demo:** [Click Here to View Demo](#)  
+- **Streamlit App Demo:** [Click Here to View Demo](https://saaransh-capstone-ol.streamlit.app/)  
 
 ---
 
