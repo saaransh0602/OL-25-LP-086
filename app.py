@@ -144,7 +144,8 @@ elif menu == "🏁 Exploratory Data Analysis":
     
 # 📈 Regression
 elif menu == "📈 Regression Task":
-
+    st.title("📌 Regression: What is the respondent's age?")
+    st.divider()
     st.markdown("""
     **Models & Results**  
     | Model                          | R² Score   | RMSE      | MAE        |
@@ -162,7 +163,7 @@ elif menu == "📈 Regression Task":
 
     🏆 **Best Model**: Random forest Regressor (by R² score)
     """)
-    st.success("🏆 Random Forest gives the best R² for age prediction, though all models have low explanatory power.")
+    st.success("🏆 Random Forest gives the best R² score for age prediction, though all models have low explanatory power.")
     
     st.divider()
     # st.markdown("### This is a sample predictor of the age of a person given their conditions ⬇️")
@@ -364,6 +365,7 @@ elif menu == "📊 Persona Clustering":
 
 
     footer()
+
 
 
 
