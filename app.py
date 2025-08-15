@@ -26,8 +26,8 @@ class SupportScoreTransformer(BaseEstimator, TransformerMixin):
 
 # Load models
 df = pd.read_csv("Models & Datasets/cleaned_survey.csv")
-clf_model = joblib.load("Models & Datasets/classification_model.pkl")
-reg_model = joblib.load("Models & Datasets/regression_model.pkl")
+# clf_model = joblib.load("Models & Datasets/classification_model.pkl")
+# reg_model = joblib.load("Models & Datasets/regression_model.pkl")
 
 # App layout
 st.set_page_config(page_title="Mental Health App", layout="wide")
@@ -355,5 +355,6 @@ elif menu == "📊 Persona Clustering":
 
 
     footer()
+
 
 
