@@ -28,7 +28,7 @@ build data-driven solutions for:
 - **Regression Notebook:** [Link to Regression Notebook](https://github.com/saaransh0602/OL-25-LP-086/blob/main/Models%20%26%20Datasets/regression_model.ipynb)
 - **Clustering Notebook:** [Link to Clustering Notebook](https://github.com/saaransh0602/OL-25-LP-086/blob/main/Models%20%26%20Datasets/clustering.ipynb)
 - **Streamlit App:** [Hosted App Link](https://saaransh-capstone-ol.streamlit.app/)  
-- **Technical Report:** [Link to Medium Blog](#) 
+- **Technical Report:** [Link to Medium Blog](https://medium.com/@saaransh2006/mental-health-in-tech-analysis-and-predictions-d14e4a7982fa) 
 
 ## Demo  
 
