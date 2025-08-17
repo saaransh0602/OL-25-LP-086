@@ -679,10 +679,11 @@ elif menu == "📌 Clustering Personas":
 
     with st.expander("📎 How to use personas"):
         st.markdown("""
-        - Tailor benefits messaging based on cluster style  
-        - Train managers to **reduce stigma** and handle conversations  
-        - Run small A/B experiments on communications & measure uplift  
-        """)
-
+        - Design policies that match the needs of different groups (e.g., stronger leave support, clear benefits).
+        - Identify which types of employees may need more proactive mental health support. 
+        - Train managers to **reduce stigma** and handle conversations
+        - Understand how workplace culture and supervision affect treatment-seeking behavior.
+        - For Employees - recognize that others share similar challenges (reduces stigma).""")
 
     footer()
+
