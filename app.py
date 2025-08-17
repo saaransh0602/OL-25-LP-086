@@ -203,9 +203,9 @@ def compute_support_score_mean_from_raw(user_raw: Dict) -> float:
 st.sidebar.title("🧭 Navigation")
 menu = st.sidebar.radio(
     "Go to",
-    ["🏠 Home", "📊 Exploratory Data Analysis",
+    ["🏠 Home", "🔎 Exploratory Data Analysis",
      "🧮 Prediction using Classification", "📈 Prediction using Regression",
-     "📌 Clustering Personas"],
+     "📊 Clustering Personas"],
     key="nav_radio"
 )
 
@@ -301,8 +301,8 @@ if menu == "🏠 Home":
 # ===========================
 # EDA
 # ===========================
-elif menu == "📊 Exploratory Data Analysis":
-    st.header("📊 Exploratory Data Analysis")
+elif menu == "🔎 Exploratory Data Analysis":
+    st.header("🔎 Exploratory Data Analysis")
     st.markdown(
         "Quick tour of dataset distributions, relationships, and multi-feature patterns I explored."
     )
@@ -329,10 +329,10 @@ elif menu == "📊 Exploratory Data Analysis":
         """)
 
     st.markdown("#### 🔹 Univariate Distributions")
-    st.image("Images/univariate1.png",  caption="Gender & Age distributions", use_container_width=True)
+    st.image("Images/univariate1.png",  caption="Gender & Age distributions, Countries & Company size", use_container_width=True)
     show_image_grid([
-        (IMG_DIR / "univariate2.png", "Country & Company size"),
-        (IMG_DIR / "univariate3.png", "Workplace support items"),
+        (IMG_DIR / "univariate2.png", "Some more feature analysis.."),
+        (IMG_DIR / "univariate3.png", "Even more features to look on to.. "),
     ], cols=3)
 
     st.markdown("#### 🔹 Bivariate Patterns")
@@ -471,7 +471,7 @@ elif menu == "🧮 Prediction using Classification":
     st.success("🏆 XGBoost outperforms Logistic Regression, SVM and Random Forest for treatment prediction.")
     st.divider()
 
-    st.markdown("#### 📈 Comparison Graph")
+    st.markdown("#### Comparison Graph")
     show_image_if_exists(IMG_DIR / "ROC_Curve.png", "ROC-AUC comparison (your experiment)")
 
     footer()
@@ -585,8 +585,8 @@ elif menu == "📈 Prediction using Regression":
 # ===========================
 # CLUSTERING
 # ===========================
-elif menu == "📌 Clustering Personas":
-    st.header("📌 Clustering Personas (KMeans + UMAP)")
+elif menu == "📊 Clustering Personas":
+    st.header("📊 Clustering Personas (KMeans + UMAP)")
     st.markdown(
         "Unsupervised clustering segments employees into groups with different support needs and engagement patterns. "
         "These personas can inform targeted HR programs and communications."
@@ -682,3 +682,4 @@ elif menu == "📌 Clustering Personas":
 
 
     footer()
+
