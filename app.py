@@ -1,0 +1,1364 @@
+# #Importing libraries
+# import streamlit as st
+# import pandas as pd
+# import joblib
+# import xgboost
+
+# from sklearn.base import BaseEstimator, TransformerMixin
+
+# class SupportScoreTransformer(BaseEstimator, TransformerMixin):
+#     def __init__(self, support_score_cols, value_map):
+#         self.support_score_cols = support_score_cols
+#         self.value_map = value_map
+
+#     def fit(self, X, y=None):
+#         return self
+
+#     def transform(self, X):
+#         X = X.copy()
+#         for col in self.support_score_cols:
+#             X[f"{col}_scaled"] = X[col].map(self.value_map)
+#         scaled_cols = [f"{col}_scaled" for col in self.support_score_cols]
+#         X["support_score"] = X[scaled_cols].mean(axis=1)
+#         X.drop(columns=self.support_score_cols + scaled_cols, inplace=True)
+#         return X
+
+
+# # Load models
+# df = pd.read_csv("Models & Datasets/cleaned_survey.csv")
+# # clf_model = joblib.load("Models & Datasets/classification_model.pkl")
+# # reg_model = joblib.load("Models & Datasets/regression_model.pkl")
+
+# # App layout
+# st.set_page_config(page_title="Mental Health App", layout="wide")
+
+
+# # Footer
+# def footer():
+#     st.markdown("---")
+#     st.markdown("""
+#     <small>Built with ❤️ by Saaransh Saxena 😎| 
+#     [LinkedIn](https://www.linkedin.com/in/saaransh-saxena-298256330/) • 
+#     [GitHub](https://github.com/saaransh0602) • 
+#     [X](https://x.com/itsSaaransh)</small>
+#     """, unsafe_allow_html=True)
+
+
+# # Sidebar Navigation
+# st.sidebar.title("🧭 Navigation")
+# menu = st.sidebar.radio(
+#     "Go to",
+#     [
+#         "🏠 Home",
+#         "🏁 Exploratory Data Analysis",
+#         "📈 Regression Task",
+#         "🧮 Classification Task",
+#         "📊 Persona Clustering"
+#     ]
+# )
+
+# # 🏠 Home
+# if menu == "🏠 Home":
+#     st.title("Mental Wellness Analysis and Support Strategy in Tech Industry")
+#     st.divider()
+#     st.header("Dataset Overview")
+#     st.markdown("""
+#     ### Dataset Source: [Mental Health in Tech Survey](https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey)
+#     ### Collected by OSMI (Open Sourcing Mental Illness)
+#     ### Features include:
+#     * Demographic details (age, gender, country)
+#     * Workplace environment (mental health benefits, leave policies)
+#     * Personal experiences (mental illness, family history)
+#     * Attitudes towards mental health
+#     """)
+
+#     st.header("Problem Statement")
+#     st.markdown("""
+#         As a Machine Learning Engineer at NeuronInsights Analytics, you've been contracted by a coalition of
+#         leading tech companies including CodeLab, QuantumEdge, and SynapseWorks. Alarmed by rising burnout,
+#         disengagement, and attrition linked to mental health, the consortium seeks data-driven strategies to
+#         proactively identify and support at-risk employees. Your role is to analyze survey data from over 1,500 tech
+#         professionals, covering workplace policies, personal mental health history, openness to seeking help, and
+#         perceived employer support.
+                    
+#         ### Project Objectives:
+#         * **Exploratory Data Analysis**
+#         * **Supervised Learning**:
+#             * *Classification task*: Predict whether a person is likely to seek mental health treatment (treatment column: yes/no)
+#             * *Regression task*: Predict the respondent's age
+#         * **Unsupervised Learning**: Cluster tech workers into mental health personas
+#         * **Streamlit App Deployment**
+#     """)
+
+#     footer()
+
+# # 🏁 Data Visualisation
+# elif menu == "🏁 Exploratory Data Analysis":
+#     st.title("📊 Data Analysis, Observations & Inferences")
+#     st.divider()
+#     st.write("This dataset had many anomalies, null values, outliers, and imbalanced data in columns like `Gender`, `Age`, `Country`, etc. which needed to be cleaned" \
+#     "and standardised.")
+#     st.write("Total number of values: `1259`")
+#     st.write("Total number of features: `27`")
+#     st.write("Features having NaN values: \n")
+#     st.write("\t`state`: 451")
+#     st.write("\t`self_employed`: 18")
+#     st.write("\t`work_interference`: 264")
+#     st.write("\t`comments`: 1095")
+#     st.divider()
+#     st.write("### Dataset Preview:")
+#     st.dataframe(df.head())
+
+#     st.divider()
+#     removed_features = ['Timestamp', 'Country', 'state', 'self_employed', 'comments']
+
+#     col1, col2 = st.columns(2)
+
+#     with col1:
+#         st.markdown("### ✅ Features Used:")
+#         for col in df.columns:
+#             st.markdown(f"- {col}")
+
+#     with col2:
+#         st.markdown("### ❌ Features Removed:")
+#         for col in removed_features:
+#             st.markdown(f"- {col}")
+
+#     st.divider()
+#     st.header("Univariate Analysis")
+#     st.image("Images/univariate1.png", caption="Univariate Analysis (1)", use_container_width=True)    
+#     st.image("Images/univariate2.png",  caption="Univariate Analysis (2)", use_container_width=True)
+#     st.image("Images/univariate3.png",  caption="Univariate Analysis (3)", use_container_width=True)
+
+#     st.divider()
+#     st.header("Bivariate Analysis")
+#     st.image("Images/bivariate.png", caption="Bivariate Analysis", use_container_width=True)
+    
+#     st.divider()
+#     st.header("Multivariate Analysis")
+#     st.image("Images/multivariate2.png", caption="Correlation Heatmap)", use_container_width=True)
+#     st.image("Images/multivariate1.png", caption="Treatment Rate (%) based on Perceived Stigma", use_container_width=True)
+
+#     footer()
+
+    
+# # 📈 Regression
+# elif menu == "📈 Regression Task":
+#     st.title("📌 Regression: What is the respondent's age?")
+#     st.divider()
+#     st.markdown("""
+#     **Models & Results**  
+#     | Model                          | R² Score   | RMSE      | MAE        |
+#     |--------------------------------|------------|-----------|------------|
+#     | Random Forest Regressor        | 0.057388   | 7.024998  | 5.547433   |
+#     | Random Forest (log-transformed)| 0.052792   | 7.042103  | 5.495858   |
+#     | XGBoost (log-transformed)      | 0.051976   | 7.045136  | 5.472915   |
+#     | XGBRegressor                   | 0.034114   | 7.111196  | 5.590417   |
+#     | Lasso Regression               | 0.025908   | 7.141339  | 5.655088   |
+#     | Gradient Boosting Regressor    | 0.018985   | 7.166674  | 5.665793   |
+#     | Ridge Regression               | 0.015816   | 7.178238  | 5.690324   |
+#     | Support Vector Regressor       | -0.006819  | 7.260316  | 5.683155   |
+#     | Linear Regression              | -0.036312  | 7.365887  | 5.890833   |
+
+
+#     🏆 **Best Model**: Random forest Regressor (by R² score)
+#     """)
+#     st.success("🏆 Random Forest gives the best R² score for age prediction, though all models have low explanatory power.")
+    
+#     st.divider()
+#     # st.markdown("### This is a sample predictor of the age of a person given their conditions ⬇️")
+
+#     # input_dict_reg = {}
+#     # display_names_reg =  {
+#     # "self_employed": "Are you self-employed?",
+#     # "Gender": "Enter your Gender",
+#     # "family_history": "Do you have a family history of mental illness?",
+#     # "treatment": "Have you sought treatment for a mental health condition?",
+#     # "work_interfere": "If you have a mental health condition, do you feel that it interferes with your work?",
+#     # "no_employees": "What is the size of your company by number of employees?",
+#     # "remote_work": "Do you work remotely (outside of an office) at least 50% of the time?",
+#     # "benefits": "Does your employer provide mental health benefits?",
+#     # "care_options": "Do you know the options for mental health care your employer provides?",
+#     # "wellness_program": "Has your employer ever discussed mental health as part of an employee wellness program?",
+#     # "seek_help": "Does your employer provide resources to learn more about mental health issues and how to seek help?",
+#     # "anonymity": "Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources?",
+#     # "leave": "How easy is it for you to take medical leave for a mental health condition?",
+#     # "mental_health_consequence": "Do you think that discussing a mental health issue with your employer would have negative consequences?",
+#     # "coworkers": "Would you be willing to discuss a mental health issue with your coworkers?",
+#     # "supervisor": "Would you be willing to discuss a mental health issue with your direct supervisor(s)?",
+#     # "obs_consequence": "Have you heard of or observed negative consequences for coworkers with mental health conditions in your workplace?",
+#     # }
+
+#     # for col in df.columns:
+#     #     if col == "Age" or col == "age_group":  
+#     #         continue
+
+#     #     options = df[col].dropna().unique().tolist()
+#     #     label = display_names_reg.get(col, col) 
+#     #     input_dict_reg[col] = st.selectbox(label, options)
+
+#     # # Convert inputs into DataFrame
+#     # input_df = pd.DataFrame([input_dict_reg])
+
+#     # # Predict Age
+#     # if st.button("Predict Age"):
+#     #     # transformed = reg_pre.transform(input_df)
+#     #     predicted_age = reg_model.predict(df)
+
+#     #     st.success(f"🎯 Predicted Age: **{int(round(predicted_age[0]))} years**")
+
+#     footer()
+
+# # 🧮 Classification
+# elif menu == "🧮 Classification Task":
+#     st.title("🧮 Will the person seek treatment?")
+#     st.divider()
+#     st.markdown("The task at hand is to estimate wether the employee would seek help or not, making it a binary classification task. Below are the models used, and their evaluation results")
+    
+#     st.header("📌 Classification: Will a person seek treatment?")
+#     st.markdown("""
+#     **Models & Results**  
+#     | Model                      | Accuracy | F1 Score | ROC-AUC |
+#     |----------------------------|----------|----------|---------|
+#     | XGBoost                    | 0.717    | 0.701    | 0.807   |
+#     | Support Vector Classifier  | 0.717    | 0.704    | 0.803   |
+#     | Logistic Regression        | 0.707    | 0.700    | 0.795   |
+#     | Random Forest              | 0.702    | 0.693    | 0.793   |
+
+
+#     🏆 **Best Model**: XGBoost Classifier
+#     """)
+#     st.success("🏆 XGBoost outperforms Logistic Regression, SVM and Random Forest for treatment prediction.")
+
+#     st.divider()
+
+#     st.image("Images/ROC_Curve.png", caption="ROC Curve for different Classification models", use_container_width=False)
+
+#     st.divider()
+#     # st.markdown("### This is a sample predictor whether a person with given conditions is likely to seek mental health support or not ⬇️")
+
+#     # input_dict_clf = {}
+#     # display_names_clf = {
+#     # "self_employed": "Are you self-employed?",
+#     # "Gender": "Enter your Gender",
+#     # "family_history": "Do you have a family history of mental illness?",
+#     # "work_interfere": "If you have a mental health condition, do you feel that it interferes with your work?",
+#     # "no_employees": "What is the size of your company by number of employees?",
+#     # "remote_work": "Do you work remotely (outside of an office) at least 50% of the time?",
+#     # "benefits": "Does your employer provide mental health benefits?",
+#     # "care_options": "Do you know the options for mental health care your employer provides?",
+#     # "wellness_program": "Has your employer ever discussed mental health as part of an employee wellness program?",
+#     # "seek_help": "Does your employer provide resources to learn more about mental health issues and how to seek help?",
+#     # "anonymity": "Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources?",
+#     # "leave": "How easy is it for you to take medical leave for a mental health condition?",
+#     # "mental_health_consequence": "Do you think that discussing a mental health issue with your employer would have negative consequences?",
+#     # "coworkers": "Would you be willing to discuss a mental health issue with your coworkers?",
+#     # "supervisor": "Would you be willing to discuss a mental health issue with your direct supervisor(s)?",
+#     # "obs_consequence": "Have you heard of or observed negative consequences for coworkers with mental health conditions in your workplace?",
+#     # }
+
+#     # for col in df.columns:
+#     #     if col == "age_group":  # Skip this column
+#     #         continue
+
+#     #     if col == "treatment": 
+#     #         continue
+
+#     #     if col == "Age":
+#     #         input_dict_clf[col] = st.number_input("Enter your age", min_value=19, max_value=100, step=1)
+#     #     else:
+#     #         options = df[col].dropna().unique().tolist()
+#     #         label = display_names_clf.get(col, col)
+#     #         input_dict_clf[col] = st.selectbox(label, options)
+
+#     # input_df = pd.DataFrame([input_dict_clf])
+
+#     # # Predict 
+#     # if st.button("Predict"):
+#     #     input_df = pd.DataFrame([input_dict_clf]) 
+#     #     prediction = clf_model.predict(input_df)[0]
+
+#     #     # Step 4: Output result
+#     #     if prediction == 1:
+#     #         st.success("✅ Predicted: Will likely seek treatment!")
+#     #     else:
+#     #         st.error("❌ Predicted: Will likely not seek treatment!")
+
+#     footer()
+
+# # 📊 Clustering
+# elif menu == "📊 Persona Clustering":
+#     st.title("📊 Clustering Analysis")
+#     st.divider()
+#     st.markdown("The objective of this task is to make clusters and group tech workers according to their mental health personas. Below are some of the techniques and algorithms applied for the same.")
+#     st.write("The columns `Age`, `Country`, `Gender`, `no_employees` were dropped due to their less contribution in Mental Health Persona of an employee. These features" \
+#     "somewhere get covered in the rest of the questionnaire filled by the respondents.")
+
+#     # Clustering techniques
+#     st.subheader("Techniques Used: ")
+#     st.write(" - Principal Component Analysis (PCA)\n - t-distributed Stochastic Neighbor Embedding (t-SNE)\n - Uniform Manifold Approximation and Projection (UMAP)")
+#     st.write("Here is the plot for all three techniques applied on this dataset.")
+#     st.image("Images/reduce.png", caption="From these clusters we can see that `UMAP` forms the best and most clear and seggregated clusters out of the three.", use_container_width=True)
+    
+#     st.write("The most optimal number of clusters were found to be 7, ranked by silhouette score for each cluster number.")
+#     st.image("Images/k_values.png", use_container_width=True)
+#     st.divider()
+
+#     st.markdown("### Here is the comparison (silhouette score) for all the models applied for clustering: ")
+#     st.write(" - **K-Means Clustering:** 0.5407\n - **Agglomerative Clustering:** 0.5291\n - **DBSCAN:** 0.4824 (6 DBSCAN Clusters, 3 Noise Points)")
+
+#     st.markdown("### ✅ From these scores, we can easily say that `K-Means` is clearly our winner.")
+#     st.image("Images/algos.png", caption="Clusters formed by the models", use_container_width=True)
+
+#     st.divider()
+#     st.image("Images/comparison.png", caption="Comparison of the 7 clusters by Features", use_container_width=True)
+#     st.divider()
+
+#     st.markdown("### 🧠 These are the different Personas the respondents can be classified into ⬇️")
+
+#     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+#     "Cluster 1", "Cluster 2", "Cluster 3",
+#     "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7"
+#     ])
+
+#     with tab1:
+#         st.markdown("""
+#         ### Cluster 1 – Balanced Support Seekers  
+#         Progressive yet moderate across all dimensions. Likely to participate in programs but not actively lead initiatives.
+#         """)
+
+#     with tab2:
+#         st.markdown("""
+#         ### Cluster 2 – Cautious Engagers  
+#         Low openness and remote work participation, moderate treatment rates. Engage only when trust is established.
+#         """)
+
+#     with tab3:
+#         st.markdown("""
+#         ### Cluster 3 – Policy-Dependent Advocates  
+#         Highly responsive to strong workplace benefits and leave policies. Thrive in structured, supportive environments.
+#         """)
+
+#     with tab4:
+#         st.markdown("""
+#         ### Cluster 4 – High-Risk Silent Sufferers  
+#         Strong treatment and family history indicators but low support scores. May avoid disclosure due to perceived stigma.
+#         """)
+
+#     with tab5:
+#         st.markdown("""
+#         ### Cluster 5 – Under-Supported Reluctants  
+#         Experience consequences without adequate access to treatment or leave. Likely constrained by organizational gaps.
+#         """)
+
+#     with tab6:
+#         st.markdown("""
+#         ### Cluster 6 – Stigma-Affected Minimalists  
+#         Engage little with mental health resources despite some awareness of physical health consequences.
+#         """)
+    
+#     with tab7:
+#         st.markdown("""
+#         ### Cluster 7 – Empowered Open Advocates  
+#         High support scores, confident use of leave, and strong openness. Natural champions for wellness advocacy.
+#         """)
+
+
+#     footer()
+
+
+
+
+
+
+# # -----------------------------
+# # Imports
+# # -----------------------------
+# import streamlit as st
+# import pandas as pd
+# import joblib, json
+
+# # -----------------------------
+# # Load models + schemas
+# # -----------------------------
+# @st.cache_resource
+# def load_models():
+#     clf = joblib.load("Models & Datasets/classification_model.pkl")
+#     reg = joblib.load("Models & Datasets/regression_model.pkl")
+
+#     with open("Models & Datasets/classification_columns.json") as f:
+#         clf_cols = json.load(f)
+#     with open("Models & Datasets/regression_columns.json") as f:
+#         reg_cols = json.load(f)
+
+#     return clf, reg, clf_cols, reg_cols
+
+# # -----------------------------
+# # Helpers
+# # -----------------------------
+# def build_input_df(user_input: dict, expected_columns: list) -> pd.DataFrame:
+#     df = pd.DataFrame([user_input])
+#     for col in expected_columns:
+#         if col not in df.columns:
+#             df[col] = 0
+#     return df[expected_columns]
+
+# def predict_classification(clf, clf_cols, user_input: dict):
+#     df = build_input_df(user_input, clf_cols)
+#     pred = clf.predict(df)[0]
+#     proba = clf.predict_proba(df)[0]
+#     return pred, proba
+
+# def predict_regression(reg, reg_cols, user_input: dict):
+#     df = build_input_df(user_input, reg_cols)
+#     pred = reg.predict(df)[0]
+#     return pred
+
+# # -----------------------------
+# # Layout
+# # -----------------------------
+# st.set_page_config(page_title="Mental Health in Tech", layout="wide")
+
+# # Footer
+# def footer():
+#     st.markdown("---")
+#     st.markdown("""
+#     <small>Built with ❤️ by Saaransh Saxena 😎| 
+#     [LinkedIn](https://www.linkedin.com/in/saaransh-saxena-298256330/) • 
+#     [GitHub](https://github.com/saaransh0602) • 
+#     [X](https://x.com/itsSaaransh)</small>
+#     """, unsafe_allow_html=True)
+
+# # Sidebar
+# st.sidebar.title("🧭 Navigation")
+# menu = st.sidebar.radio(
+#     "Go to",
+#     ["🏠 Home", "🏁 Exploratory Data Analysis", "📈 Regression Task",
+#      "🧮 Classification Task", "📊 Persona Clustering"]
+# )
+
+# clf, reg, clf_cols, reg_cols = load_models()
+
+# # -----------------------------
+# # Pages
+# # -----------------------------
+# if menu == "🏠 Home":
+#     st.title("OpenLearn 1.0 ML Capstone Project")
+#     st.divider()
+#     st.header("Problem Statement")
+#     st.markdown("""
+#     Rising burnout and attrition in the tech industry are closely linked to mental health.  
+#     This project analyzes survey data to:
+#     - Predict if an employee will seek mental health treatment.
+#     - Predict age based on workplace and personal attributes.
+#     - Cluster employees into distinct personas for HR interventions.
+#     """)
+#     footer()
+
+# elif menu == "🏁 Exploratory Data Analysis":
+#     st.title("📊 Exploratory Data Analysis")
+#     st.divider()
+#     st.markdown("👉 Insert your own EDA summaries, images, and charts here.")
+#     # Example placeholders:
+#     st.image("Images/univariate1.png", caption="Univariate Analysis", use_container_width=True)
+#     st.image("Images/bivariate.png", caption="Bivariate Analysis", use_container_width=True)
+#     st.image("Images/multivariate1.png", caption="Multivariate Analysis", use_container_width=True)
+#     footer()
+
+# elif menu == "📈 Regression Task":
+#     st.title("📈 Predict Age")
+#     st.divider()
+#     st.markdown("This regression task predicts the **age** of an individual based on workplace and personal attributes.")
+
+#     # User Input Form
+#     st.subheader("Enter details")
+#     user_input = {}
+
+#     # ---- All regression columns ----
+#     user_input["Gender"] = st.selectbox("Gender", ["Male", "Female", "Other"])
+#     countries = ["United States", "United Kingdom", "Canada", "Germany", "Ireland", "India", "Other"]
+#     user_input["Country"] = st.selectbox("Country", countries)
+#     user_input["self_employed"] = st.selectbox("Are you self-employed?", ["Yes", "No"])
+#     user_input["family_history"] = st.selectbox("Family history of mental illness?", ["Yes", "No"])
+#     user_input["treatment"] = st.selectbox("Have you sought treatment?", ["Yes", "No"])
+#     user_input["work_interfere"] = st.selectbox(
+#         "If you have a mental health condition, does it interfere with work?",
+#         ["Never", "Rarely", "Sometimes", "Often"]
+#     )
+#     user_input["no_employees"] = st.selectbox(
+#         "Company size (number of employees)",
+#         ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"]
+#     )
+#     user_input["remote_work"] = st.selectbox("Do you work remotely (≥50% of the time)?", ["Yes", "No"])
+#     user_input["benefits"] = st.selectbox("Does your employer provide mental health benefits?", ["Yes", "No", "Don't know"])
+#     user_input["care_options"] = st.selectbox("Do you know the options for mental health care your employer provides?", ["Yes", "No", "Not sure"])
+#     user_input["wellness_program"] = st.selectbox("Has your employer discussed mental health in a wellness program?", ["Yes", "No", "Don't know"])
+#     user_input["seek_help"] = st.selectbox("Does employer provide resources to seek help?", ["Yes", "No", "Don't know"])
+#     user_input["anonymity"] = st.selectbox("Is anonymity protected if you seek resources?", ["Yes", "No", "Don't know"])
+#     user_input["leave"] = st.selectbox("Ease of taking medical leave for mental health", ["Difficult", "Medium", "Easy"])
+#     user_input["mental_health_consequence"] = st.selectbox("Negative consequence if discussing with employer?", ["Yes", "No", "Maybe"])
+#     user_input["phys_health_consequence"] = st.selectbox("Negative consequence if discussing physical health?", ["Yes", "No", "Maybe"])
+#     user_input["coworkers"] = st.selectbox("Willing to discuss with coworkers?", ["Yes", "No", "Some of them"])
+#     user_input["supervisor"] = st.selectbox("Willing to discuss with supervisor(s)?", ["Yes", "No", "Some of them"])
+#     user_input["mental_health_interview"] = st.selectbox("Discuss mental health in interview?", ["Yes", "No", "Maybe"])
+#     user_input["phys_health_interview"] = st.selectbox("Discuss physical health in interview?", ["Yes", "No", "Maybe"])
+#     user_input["mental_vs_physical"] = st.selectbox("Is mental health as important as physical health?", ["Yes", "No", "Don't know"])
+#     user_input["obs_consequence"] = st.selectbox("Observed negative consequences for others?", ["Yes", "No"])
+
+#     # ---- Prediction ----
+#     if st.button("Predict Age", key="predict_age"):
+#         pred = predict_regression(reg, reg_cols, user_input)
+#         st.success(f"🎯 Predicted Age: **{pred:.1f} years**")
+
+#     footer()
+
+
+# elif menu == "🧮 Classification Task":
+#     st.title("🧮 Will the person seek treatment?")
+#     st.divider()
+#     st.markdown("This classification task predicts whether an individual is **likely to seek mental health treatment**.")
+
+#     # User Input Form
+#     st.subheader("Enter details")    
+
+#     # Value mapping
+#     value_map = {
+#         'Yes': 1.0,
+#         'No': 0.0,
+#         "Don't know": 2.0,
+#         'Not sure': 2.0,
+#         'Some of them': 0.5,
+#         'Difficult': 0.0,
+#         'Medium': 0.5,
+#         'Easy': 1.0
+#     }
+
+#     # Collect original responses
+#     user_input = {}
+#     age_val = st.number_input("Age", min_value=18, max_value=75, step=1, value=25)
+#     if age_val < 18 or age_val > 100:
+#         st.error("⚠️ Invalid Age. Please enter a valid age (18-75).")
+#     else:
+#         user_input["Age"] = age_val
+#     user_input["Gender"] = st.selectbox("Gender", ["Male", "Female", "Other"])
+
+#     top_countries = ["United States", "United Kingdom", "Canada", "Germany", "Ireland", "India", "Other"]
+#     user_input["Country"] = st.selectbox("Country", top_countries)
+#     user_input["self_employed"] = st.selectbox("Are you self-employed?", ["Yes", "No"])
+#     user_input["family_history"] = st.selectbox("Family history of mental illness?", ["Yes", "No"])
+#     user_input["work_interfere"] = st.selectbox("Does mental health interfere with work?", ["Never", "Rarely", "Sometimes", "Often"])
+#     user_input["no_employees"] = st.selectbox("Company size", ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"])
+#     user_input["remote_work"] = st.selectbox("Do you work remotely?", ["Yes", "No"])
+#     user_input["mental_health_interview"] = st.selectbox("Discuss mental health in interview?", ["Yes", "No", "Maybe"])
+#     user_input["phys_health_interview"] = st.selectbox("Discuss physical health in interview?", ["Yes", "No", "Maybe"])
+#     user_input["mental_vs_physical"] = st.selectbox("Is mental health as important as physical health?", ["Yes", "No", "Don't know"])
+#     user_input["obs_consequence"] = st.selectbox("Observed negative consequences for others?", ["Yes", "No"])
+#     user_input["mental_health_consequence"] = st.selectbox("Negative consequence if discussing with employer?", ["Yes", "No", "Maybe"])
+#     user_input["phys_health_consequence"] = st.selectbox("Negative consequence if discussing physical health?", ["Yes", "No", "Maybe"])
+
+#     # 8 support-related questions
+#     support_cols = ["benefits","care_options","wellness_program","seek_help",
+#                     "anonymity","supervisor","coworkers","leave"]
+
+#     for col in support_cols:
+#         user_input[col] = st.selectbox(col.capitalize(), ["Yes","No","Don't know","Not sure","Some of them","Difficult","Medium","Easy"])
+
+#     # Compute support_score
+#     support_score = sum([value_map.get(user_input[col], 0) for col in support_cols])
+#     user_input["support_score"] = support_score
+
+#     # Drop the original support columns
+#     for col in support_cols:
+#         user_input.pop(col)
+
+
+#     # --- Prediction ---
+#     if st.button("Predict Treatment", key="predict_treatment"):
+#         pred, proba = predict_classification(clf, clf_cols, user_input)
+#         if pred == 1:
+#             st.success(f"✅ Prediction: Will likely seek treatment (Confidence: {proba.max():.2f})")
+#         else:
+#             st.error(f"❌ Prediction: Will likely NOT seek treatment (Confidence: {proba.max():.2f})")
+
+#         footer()
+
+# # 📊 Clustering
+# elif menu == "📊 Persona Clustering":
+#     st.title("📊 Clustering Analysis")
+#     st.divider()
+#     st.markdown("The objective of this task is to make clusters and group tech workers according to their mental health personas. Below are some of the techniques and algorithms applied for the same.")
+#     st.write("The columns `Age`, `Country`, `Gender`, `no_employees` were dropped due to their less contribution in Mental Health Persona of an employee. These features" \
+#     "somewhere get covered in the rest of the questionnaire filled by the respondents.")
+
+#     # Clustering techniques
+#     st.subheader("Techniques Used: ")
+#     st.write(" - Principal Component Analysis (PCA)\n - t-distributed Stochastic Neighbor Embedding (t-SNE)\n - Uniform Manifold Approximation and Projection (UMAP)")
+#     st.write("Here is the plot for all three techniques applied on this dataset.")
+#     st.image("Images/reduce.png", caption="From these clusters we can see that `UMAP` forms the best and most clear and seggregated clusters out of the three.", use_container_width=True)
+    
+#     st.write("The most optimal number of clusters were found to be 7, ranked by silhouette score for each cluster number.")
+#     st.image("Images/k_values.png", use_container_width=True)
+#     st.divider()
+
+#     st.markdown("### Here is the comparison (silhouette score) for all the models applied for clustering: ")
+#     st.write(" - **K-Means Clustering:** 0.5407\n - **Agglomerative Clustering:** 0.5291\n - **DBSCAN:** 0.4824 (6 DBSCAN Clusters, 3 Noise Points)")
+
+#     st.markdown("### ✅ From these scores, we can easily say that `K-Means` is clearly our winner.")
+#     st.image("Images/algos.png", caption="Clusters formed by the models", use_container_width=True)
+
+#     st.divider()
+#     st.image("Images/comparison.png", caption="Comparison of the 7 clusters by Features", use_container_width=True)
+#     st.divider()
+
+#     st.markdown("### 🧠 These are the different Personas the respondents can be classified into ⬇️")
+
+#     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+#     "Cluster 1", "Cluster 2", "Cluster 3",
+#     "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7"
+#     ])
+
+#     with tab1:
+#         st.markdown("""
+#         ### Cluster 1 – Balanced Support Seekers  
+#         Progressive yet moderate across all dimensions. Likely to participate in programs but not actively lead initiatives.
+#         """)
+
+#     with tab2:
+#         st.markdown("""
+#         ### Cluster 2 – Cautious Engagers  
+#         Low openness and remote work participation, moderate treatment rates. Engage only when trust is established.
+#         """)
+
+#     with tab3:
+#         st.markdown("""
+#         ### Cluster 3 – Policy-Dependent Advocates  
+#         Highly responsive to strong workplace benefits and leave policies. Thrive in structured, supportive environments.
+#         """)
+
+#     with tab4:
+#         st.markdown("""
+#         ### Cluster 4 – High-Risk Silent Sufferers  
+#         Strong treatment and family history indicators but low support scores. May avoid disclosure due to perceived stigma.
+#         """)
+
+#     with tab5:
+#         st.markdown("""
+#         ### Cluster 5 – Under-Supported Reluctants  
+#         Experience consequences without adequate access to treatment or leave. Likely constrained by organizational gaps.
+#         """)
+
+#     with tab6:
+#         st.markdown("""
+#         ### Cluster 6 – Stigma-Affected Minimalists  
+#         Engage little with mental health resources despite some awareness of physical health consequences.
+#         """)
+    
+#     with tab7:
+#         st.markdown("""
+#         ### Cluster 7 – Empowered Open Advocates  
+#         High support scores, confident use of leave, and strong openness. Natural champions for wellness advocacy.
+#         """)
+
+
+#     footer()
+
+# ===========================
+# Mental Health in Tech - Streamlit App (Enhanced)
+# ===========================
+# Author: You :)
+# Notes:
+# - Models & schemas expected under: "Models & Datasets/"
+#   classification_model.pkl, regression_model.pkl,
+#   classification_columns.json, regression_columns.json
+# - Images expected under: "Images/"
+#   Univariate (3): univariate_1.png, univariate_2.png, univariate_3.png
+#   Bivariate (1): bivariate_1.png
+#   Multivariate (2): multivariate_1.png, multivariate_2.png
+#   Classification (1): classification_roc.png
+#   Clustering (3): clusters_1.png, clusters_2.png, clusters_3.png
+# - Safe against duplicate widget IDs (unique keys everywhere)
+# - Handles support_score (mean) inside app; extra columns are auto-dropped
+#   by schema alignment so the model only receives expected columns.
+
+import json
+import io
+from pathlib import Path
+from typing import Dict, List, Tuple
+
+import numpy as np
+import pandas as pd
+import streamlit as st
+import joblib
+
+# ===========================
+# Page Setup & Global Styles
+# ===========================
+st.set_page_config(
+    page_title="Mental Health in Tech - Analysis & Predictions",
+    page_icon="🧠",
+    layout="wide"
+)
+
+# --- Custom CSS (subtle glassy cards, gradient headers, nicer buttons) ---
+st.markdown("""
+<style>
+/* Global font sizes a bit bigger */
+html, body, [class*="css"] { font-size: 16px; }
+
+/* Gradient page title */
+.gradient-title {
+  background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Cards */
+.card {
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+/* Metric-like chips */
+.kchip {
+  display: inline-block;
+  border-radius: 14px;
+  padding: 4px 10px;
+  margin: 2px 8px 2px 0;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+  font-size: 0.9rem;
+}
+
+/* Section headers */
+.section {
+  padding: 6px 10px;
+  border-left: 5px solid #6366f1;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+/* Footer */
+.footer {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+# ===========================
+# Helpers: IO & UI
+# ===========================
+IMG_DIR = Path("Images")
+MODELS_DIR = Path("Models & Datasets")
+
+def exists(p: Path) -> bool:
+    try:
+        return p.exists()
+    except Exception:
+        return False
+
+def show_image_if_exists(path: Path, caption: str = "", use_cols: int = 0):
+    if exists(path):
+        st.image(str(path), caption=caption, use_container_width=True)
+    else:
+        st.info(f"ℹ️ Image not found at `{path.as_posix()}`")
+
+def show_image_grid(paths_and_caps: List[Tuple[Path, str]], cols=3):
+    if not paths_and_caps:
+        return
+    for i in range(0, len(paths_and_caps), cols):
+        row = paths_and_caps[i:i+cols]
+        columns = st.columns(len(row))
+        for c, (p, cap) in zip(columns, row):
+            with c:
+                show_image_if_exists(p, cap)
+
+def info_chip(text: str, bg="#6C63FF", color="white"):
+    st.markdown(
+        f"""
+        <span style="
+            background-color:{bg};
+            color:{color};
+            padding:3px 8px;
+            border-radius:12px;
+            font-size:12px;
+            font-weight:500;
+        ">{text}</span>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Footer
+def footer():
+    st.markdown("---")
+    st.markdown("""
+    <small>Built with ❤️ and dedication by **Saaransh** 😎| 
+    [LinkedIn](https://www.linkedin.com/in/saaransh-saxena-298256330/) • 
+    [X](https://x.com/itsSaaransh) • 
+    [GitHub](https://github.com/saaransh0602) • 
+    [Medium Blog](https://medium.com/@saaransh2006/mental-health-in-tech-analysis-and-predictions-d14e4a7982fa)</small>
+    """, unsafe_allow_html=True)
+
+# ===========================
+# Model Loading & Prediction API
+# ===========================
+@st.cache_resource(show_spinner=True)
+def load_models_and_schemas():
+    # You can change the paths below if needed
+    clf = joblib.load(MODELS_DIR / "classification_model.pkl")
+    reg = joblib.load(MODELS_DIR / "regression_model.pkl")
+
+    with open(MODELS_DIR / "classification_columns.json") as f:
+        clf_cols = json.load(f)
+    with open(MODELS_DIR / "regression_columns.json") as f:
+        reg_cols = json.load(f)
+
+    return clf, reg, clf_cols, reg_cols
+
+
+def build_input_df(user_input: Dict, expected_columns: List[str]) -> pd.DataFrame:
+    """
+    Build a one-row DataFrame with exactly the columns the model expects.
+    - Any missing columns are added with 0.
+    - Extra keys in user_input are ignored by subsetting to expected_columns.
+    """
+    df = pd.DataFrame([user_input])
+    # add missing
+    for col in expected_columns:
+        if col not in df.columns:
+            df[col] = 0
+    # order & subset
+    df = df[expected_columns]
+    return df
+
+
+def predict_classification(clf, expected_cols, user_input: Dict):
+    df = build_input_df(user_input, expected_cols)
+    pred = clf.predict(df)[0]
+    # try predict_proba if supported
+    try:
+        proba = clf.predict_proba(df)[0]
+    except Exception:
+        # fallback: fake a probability if not available
+        proba = np.array([0.5, 0.5]) if pred in [0, 1] else np.array([1.0])
+    return pred, proba
+
+
+def predict_regression(reg, expected_cols, user_input: Dict):
+    df = build_input_df(user_input, expected_cols)
+    pred = reg.predict(df)[0]
+    return float(pred)
+
+
+# ===========================
+# Support Score (Mean) Mapping
+# ===========================
+SUPPORT_COLS = [
+    "benefits", "care_options", "wellness_program", "seek_help",
+    "anonymity", "supervisor", "coworkers", "leave"
+]
+
+VALUE_MAP = {
+    'Yes': 1.0,
+    'No': 0.0,
+    "Don't know": 2.0,
+    'Not sure': 2.0,
+    'Some of them': 0.5,
+    'Difficult': 0.0,
+    'Medium': 0.5,
+    'Easy': 1.0
+}
+
+def compute_support_score_mean_from_raw(user_raw: Dict) -> float:
+    vals = [VALUE_MAP.get(user_raw.get(c), 0) for c in SUPPORT_COLS]
+    return float(np.mean(vals)) if len(vals) else 0.0
+
+
+# ===========================
+# Sidebar Navigation
+# ===========================
+st.sidebar.title("🧭 Navigation")
+menu = st.sidebar.radio(
+    "Go to",
+    ["🏠 Home", "📊 Exploratory Data Analysis",
+     "🧮 Prediction using Classification", "📈 Prediction using Regression",
+     "📌 Clustering Personas"],
+    key="nav_radio"
+)
+
+# Load models once
+try:
+    clf_model, reg_model, clf_cols, reg_cols = load_models_and_schemas()
+except Exception as e:
+    st.error(f"❌ Failed to load models/schemas: {e}")
+    st.stop()
+
+
+if menu == "🏠 Home":
+    st.markdown('<h1 class="gradient-title">🧠 Mental Health in Tech — Analysis & Predictions</h1>', unsafe_allow_html=True)
+    st.write("")
+
+    st.markdown("""
+    <div style="text-align: justify;">
+    Mental health is a critical aspect of workplace wellbeing.  
+    This project explores survey data from the **tech industry** to understand patterns, 
+    predict treatment-seeking behavior, and cluster employees into distinct personas.  
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    # 🔹 Dataset Source
+    st.subheader("📂 Dataset Source")
+    st.markdown("""
+    Dataset: **[Mental Health in Tech Survey](https://www.kaggle.com/datasets/osmi/mental-health-in-tech-survey)**  
+    Collected by **OSMI (Open Sourcing Mental Illness)**
+    """)
+
+    # 🔹 Features
+    st.subheader("🧾 Features include")
+    st.markdown("""
+    - Demographic details (age, gender, country)  
+    - Workplace environment (mental health benefits, leave policies)  
+    - Personal experiences (mental illness, family history)  
+    - Attitudes towards mental health  
+    """)
+
+    # 🔹 Problem Statement
+    st.subheader("❓ Problem Statement")
+    st.markdown(""" As a Machine Learning Engineer at NeuronInsights Analytics, we've been contracted by a coalition of 
+    leading tech companies including CodeLab, QuantumEdge, and SynapseWorks. Alarmed by rising burnout, 
+    disengagement, and attrition linked to mental health, the consortium seeks data-driven strategies to 
+    proactively identify and support at-risk employees. Our role is to analyze survey data from over 1,500 tech 
+    professionals, covering workplace policies, personal mental health history, openness to seeking help, and perceived employer support.""")
+
+    st.markdown("---")
+
+    # ✨ Why this matters
+    st.subheader("✨ Why this matters")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.success("📈 Data-driven insight for HR & well-being.")
+    with c2:
+        st.info("👩‍💻 Tech workplace pressure is real; stigma persists.")
+    with c3:
+        st.warning("🧩 Policy & culture shape outcomes more than you think.")
+
+    st.markdown("---")
+
+    # 📌 Highlights
+    st.subheader("📌 Highlights from the study")
+    k1, k2, k3, k4 = st.columns(4)
+    with k1:
+        st.metric("Responses", "1,259")
+        info_chip("OSMI dataset")
+    with k2:
+        st.metric("Best Classifier", "XGBoost")
+        info_chip("ROC-AUC ≈ 0.81")
+    with k3:
+        st.metric("Best Regressor", "RF 🌳")
+        info_chip("R² Score ≈ 0.07")
+    with k4:
+        st.metric("Clustering Silhouette", "≈0.54")
+        info_chip("KMeans + UMAP")
+
+    st.info("💬 *“Mental health requires as much intentional support as physical health.”*")
+
+    # Notes & Caveats
+    st.subheader("🧩 Notes & Caveats")
+    st.markdown("""
+    - Classification uses workplace support signals + demographics; best model: **XGBoost** (~0.81 ROC-AUC).  
+    - Regression (age) is noisy; **Random Forest** topped the list with low R² (~0.07).  
+    - Clustering performed best with **KMeans** after **UMAP**, silhouette around **0.54**.  
+    - Interpret predictions **contextually**; combine with policy improvements & culture work.  
+    """)
+
+    footer()
+
+# ===========================
+# EDA
+# ===========================
+elif menu == "📊 Exploratory Data Analysis":
+    st.header("📊 Exploratory Data Analysis")
+    st.markdown(
+        "Quick tour of dataset distributions, relationships, and multi-feature patterns I explored."
+    )
+
+    st.markdown("#### 🔹 Dataset Overview")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.metric("Records", "1,259")
+    with c2:
+        st.metric("Features (core)", "27")
+    with c3:
+        st.metric("Countries", "60+")
+    st.caption("*Info from raw data.. not processed data")
+
+    # Cleaning details
+    with st.expander("🧹 Data Cleaning"):
+        st.markdown("""
+        - Removed unrealistic or noisy ages; standardized gender labels  
+        - Removed useless features from the dataset 
+        - Imputed missing workplace policy fields with mode  
+        - Removed Non-Techies  
+        - Engineered a new feature **support_score** for better training
+        - One-Hot Encoding with `handle_unknown='ignore'`
+        """)
+
+    st.markdown("#### 🔹 Univariate Distributions")
+    st.image("Images/univariate1.png",  caption="Gender & Age distributions", use_container_width=True)
+    show_image_grid([
+        (IMG_DIR / "univariate2.png", "Country & Company size"),
+        (IMG_DIR / "univariate3.png", "Workplace support items"),
+    ], cols=3)
+
+    st.markdown("#### 🔹 Bivariate Patterns")
+    show_image_if_exists(IMG_DIR / "bivariate.png", "Treatment vs key features")
+   
+    st.markdown("#### 🔹 Multivariate Insights")
+    show_image_grid([
+        (IMG_DIR / "multivariate1.png", "Feature interplay & stigma indicators"),
+        (IMG_DIR / "multivariate2.png", "Correlation matrix (all features)"),
+    ], cols=1)
+    st.markdown(
+        "Stigma signals (e.g., perceived consequences) are strongly tied to treatment behavior."
+        "These patterns of the correlation matrix (down) also explains why **age regression** is weak: features don't linearly capture age."
+    )
+
+    footer()
+
+# ===========================
+# CLASSIFICATION
+# ===========================
+elif menu == "🧮 Prediction using Classification":
+    st.header("🧮 Prediction using Classification")
+    st.markdown(
+        "Enter respondent's details to predict the likelihood of seeking a mental health treatment."
+    )
+
+    # --- Collect inputs (original survey style) ---
+    user = {}
+
+    # Age with validation
+    age_val = st.number_input("Your Age?", min_value=0, max_value=120, step=1, value=25, key="cls_age")
+    if age_val < 18 or age_val > 75:
+        st.error("⚠️ Invalid Age. Please enter a valid age (18-75).")
+    else:
+        user["Age"] = age_val
+
+    user["Gender"] = st.selectbox("Your Gender?", ["Male", "Female", "Other"], key="cls_gender")
+
+    countries = ["United States", "United Kingdom", "Canada", "Germany", "Ireland", "India", "Other"]
+    user["Country"] = st.selectbox("Country you belong to:", countries, key="cls_country")
+
+    user["self_employed"] = st.selectbox("Are you self-employed?", ["Yes", "No"], key="cls_selfemp")
+    user["family_history"] = st.selectbox("Do you have a family history of mental illness?", ["Yes", "No"], key="cls_famhx")
+
+    user["work_interfere"] = st.selectbox(
+        "If you have a mental health condition, does it interfere with work?",
+        ["Never", "Rarely", "Sometimes", "Often"], key="cls_interfere"
+    )
+
+    user["no_employees"] = st.selectbox(
+        "How many employees are in your company/organization?",
+        ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"], key="cls_size"
+    )
+
+    user["remote_work"] = st.selectbox("Do you work remotely (≥50% of the time)?", ["Yes", "No"], key="cls_remote")
+
+    # Support-related original answers (we still collect all 8)
+    st.markdown("##### Workplace support & policies")
+    cols1 = st.columns(4)
+    with cols1[0]:
+        user["benefits"] = st.selectbox("Does your employer provide mental health benefits?", ["Yes", "No", "Don't know"], key="cls_benefits")
+    with cols1[1]:
+        user["care_options"] = st.selectbox("Do you know the mental health care options at your workplace?", ["Yes", "No", "Not sure"], key="cls_care")
+    with cols1[2]:
+        user["wellness_program"] = st.selectbox("Has your employer discussed mental health in a wellness program?", ["Yes", "No", "Don't know"], key="cls_wellness")
+    with cols1[3]:
+        user["seek_help"] = st.selectbox("Does your employer provide resources to learn about mental health?", ["Yes", "No", "Don't know"], key="cls_seek")
+
+    cols2 = st.columns(4)
+    with cols2[0]:
+        user["anonymity"] = st.selectbox("Is your anonymity protected if you seek mental health treatment at work?", ["Yes", "No", "Don't know"], key="cls_anon")
+    with cols2[1]:
+        user["leave"] = st.selectbox("Ease of medical leave for a mental health condition?", ["Difficult", "Medium", "Easy"], key="cls_leave")
+    with cols2[2]:
+        user["coworkers"] = st.selectbox("Would you discuss a mental health issue with coworkers?", ["Yes", "No", "Some of them"], key="cls_cow")
+    with cols2[3]:
+        user["supervisor"] = st.selectbox("Would you discuss a mental health issue with your supervisor(s)?", ["Yes", "No", "Some of them"], key="cls_sup")
+
+    user["mental_health_consequence"] = st.selectbox("Do you think that discussing a mental health issue with your employer would have negative consequences?", ["Yes", "No", "Maybe"], key="cls_mhc")
+    user["phys_health_consequence"] = st.selectbox("What about discussing Physical Health?", ["Yes", "No", "Maybe"], key="cls_phc")
+    user["mental_health_interview"] = st.selectbox("Would you bring up a mental health issue with a potential employer in an interview?", ["Yes", "No", "Maybe"], key="cls_mhi")
+    user["phys_health_interview"] = st.selectbox("Would you mention a physical health issue in a job interview?", ["Yes", "No", "Maybe"], key="cls_phi")
+    user["mental_vs_physical"] = st.selectbox("Does your employer take mental health as seriously as physical health?", ["Yes", "No", "Don't know"], key="cls_mvsp")
+    user["obs_consequence"] = st.selectbox("Have you heard of or observed negative consequences for coworkers with mental health conditions in your workplace?", ["Yes", "No"], key="cls_obs")
+
+    # --- Compute support_score (mean) but keep originals in `user`.
+    support_score = compute_support_score_mean_from_raw(user)
+    user["support_score"] = support_score  # harmless if model doesn't need it; builder will drop extras
+
+    # --- Predict ---
+    left, right = st.columns([1, 2])
+    with left:
+        go = st.button("Predict Treatment", key="btn_pred_treatment")
+
+    if go:
+        with st.spinner("Scoring..."):
+            pred, proba = predict_classification(clf_model, clf_cols, user)
+
+        st.markdown("### Result")
+        colA, colB = st.columns([1, 3])
+
+        with colA:
+            if pred == 1:
+                st.error(f"😟 Mental Health Treatment **required** for you!")
+            else:
+                st.success(f"😄 You do **not require** Mental Health treatment!")
+
+            # Confidence bar (if binary proba known)
+            try:
+                p_seek = float(proba[1])
+                st.progress(int(round(p_seek * 100)))
+                st.caption(f"Confidence (seek): {p_seek:.2f}")
+            except Exception:
+                pass
+
+        with colB:
+            with st.expander("📎 Model details & notes"):
+                st.markdown("""
+                - Trained on cleaned survey data with categorical encoding  
+                - Includes workplace policy perceptions and demographics  
+                - **XGBoost** performed best on validation (ROC-AUC around ~0.81)  
+                - Predictions are probabilistic; interpret alongside HR context  
+                """)
+    
+    st.divider()
+    st.markdown("#### 🤖 Models & Results")
+    st.markdown("""
+    | Model                     | Accuracy | F1 Score | ROC-AUC |
+    |---------------------------|----------|----------|---------|
+    | XGBoost                   | 0.727    | 0.708    | 0.811   |
+    | Support Vector Classifier | 0.712    | 0.697    | 0.804   |
+    | Logistic Regression       | 0.707    | 0.697    | 0.794   |
+    | Random Forest             | 0.727    | 0.711    | 0.790   |
+
+    🏆 **Best Model**: XGBoost Classifier """)
+    st.success("🏆 XGBoost outperforms Logistic Regression, SVM and Random Forest for treatment prediction.")
+    st.divider()
+
+    st.markdown("#### 📈 Comparison Graph")
+    show_image_if_exists(IMG_DIR / "ROC_Curve.png", "ROC-AUC comparison (your experiment)")
+
+    footer()
+
+
+# ===========================
+# REGRESSION
+# ===========================
+elif menu == "📈 Prediction using Regression":
+    st.header("📈 Prediction using Regression")
+    st.markdown(
+        "Estimate a respondent’s age from workplace and personal attributes. "
+        "Note: age is weakly captured by these features, so treat results as indicative only."
+    )
+
+    # Collect regression inputs (exact columns you provided earlier for regression)
+    reg_user = {}
+    # All categorical; 'Age' is *not* in regression inputs (target)
+    reg_user["Gender"] = st.selectbox("Your Gender?", ["Male", "Female", "Other"], key="reg_gender")
+
+    top_countries = ["United States", "United Kingdom", "Canada", "Germany", "Ireland", "India", "Other"]
+    reg_user["Country"] = st.selectbox("Country you belong to?", top_countries, key="reg_country")
+
+    reg_user["self_employed"] = st.selectbox("Are you self-employed?", ["Yes", "No"], key="reg_self")
+    reg_user["family_history"] = st.selectbox("Do you have a Family history of mental illness?", ["Yes", "No"], key="reg_famhx")
+    reg_user["treatment"] = st.selectbox("Have you sought treatment for a mental health condition?", ["Yes", "No"], key="reg_treat")
+
+    reg_user["work_interfere"] = st.selectbox(
+        "If you have a mental health condition, does it interfere with work?",
+        ["Never", "Rarely", "Sometimes", "Often"], key="reg_interfere"
+    )
+    reg_user["no_employees"] = st.selectbox(
+        "How many employees are in your company/organization?",
+        ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"], key="reg_size"
+    )
+    reg_user["remote_work"] = st.selectbox("Do you work remotely (≥50% of the time)?", ["Yes", "No"], key="reg_remote")
+
+    colsR1 = st.columns(4)
+    with colsR1[0]:
+        reg_user["benefits"] = st.selectbox("Does your employer provide mental health benefits?", ["Yes", "No", "Don't know"], key="reg_benefits")
+    with colsR1[1]:
+        reg_user["care_options"] = st.selectbox("Do you know the mental health care options at your workplace?", ["Yes", "No", "Not sure"], key="reg_care")
+    with colsR1[2]:
+        reg_user["wellness_program"] = st.selectbox("Has your employer discussed mental health in a wellness program?", ["Yes", "No", "Don't know"], key="reg_wellness")
+    with colsR1[3]:
+        reg_user["seek_help"] = st.selectbox("Does your employer provide resources to learn about mental health?", ["Yes", "No", "Don't know"], key="reg_seek")
+
+    colsR2 = st.columns(4)
+    with colsR2[0]:
+        reg_user["anonymity"] = st.selectbox("Is your anonymity protected if you seek mental health treatment at work?", ["Yes", "No", "Don't know"], key="reg_anon")
+    with colsR2[1]:
+        reg_user["leave"] = st.selectbox("Ease of medical leave for a mental health condition?", ["Difficult", "Medium", "Easy"], key="reg_leave")
+    with colsR2[2]:
+        reg_user["mental_health_consequence"] = st.selectbox("Do you think that discussing a mental health issue with your employer would have negative consequences?", ["Yes", "No", "Maybe"], key="reg_mhc")
+    with colsR2[3]:
+        reg_user["phys_health_consequence"] = st.selectbox("What about discussing Physical Health?", ["Yes", "No", "Maybe"], key="reg_phc")
+
+    colsR3 = st.columns(4)
+    with colsR3[0]:
+        reg_user["coworkers"] = st.selectbox("Would you discuss a mental health issue with coworkers?", ["Yes", "No", "Some of them"], key="reg_cow")
+    with colsR3[1]:
+        reg_user["supervisor"] = st.selectbox("Would you discuss a mental health issue with your supervisor(s)?", ["Yes", "No", "Some of them"], key="reg_sup")
+    with colsR3[2]:
+        reg_user["mental_health_interview"] = st.selectbox("Would you bring up a mental health issue with a potential employer in an interview?", ["Yes", "No", "Maybe"], key="reg_mhi")
+    with colsR3[3]:
+        reg_user["phys_health_interview"] = st.selectbox("Would you mention a physical health issue in a job interview?", ["Yes", "No", "Maybe"], key="reg_phi")
+
+    reg_user["mental_vs_physical"] = st.selectbox("Does your employer take mental health as seriously as physical health?", ["Yes", "No", "Don't know"], key="reg_mvsp")
+    reg_user["obs_consequence"] = st.selectbox("Have you heard of or observed negative consequences for coworkers with mental health conditions in your workplace?", ["Yes", "No"], key="reg_obs")
+
+    # Predict
+    go_reg = st.button("Predict Age", key="btn_pred_age")
+    if go_reg:
+        with st.spinner("Scoring..."):
+            yhat = predict_regression(reg_model, reg_cols, reg_user)
+
+        st.markdown("### Result")
+        cA, cB = st.columns([1, 2])
+        with cA:
+            st.success(f"🎯 Predicted Age: **{yhat:.1f} years**")
+        with cB:
+            with st.expander("📎 Model details & notes"):
+                st.markdown("""
+                - Multiple regressors tested; **Random Forest** performed best on validation  
+                - R² was low (~0.07), implying weak predictability of age from given features  
+                - Treat predictions as hints, not exact ages  
+                """)
+
+    st.divider()
+    st.markdown("#### 🤖 Models & Results")
+    st.markdown("""
+    | Model                          | R² Score |   RMSE   |   MAE    |
+    |--------------------------------|----------|----------|----------|
+    | Random Forest Regressor        | 0.069362 | 6.980238 | 5.515165 |
+    | Random Forest (log-transformed)| 0.054473 | 7.035854 | 5.450534 |
+    | XGBoost (log-transformed)      | 0.051649 | 7.046350 | 5.473678 |
+    | XGBRegressor                   | 0.050332 | 7.051243 | 5.560343 |
+    | Gradient Boosting Regressor    | 0.049264 | 7.055208 | 5.587464 |
+    | Lasso Regression               | 0.025909 | 7.141338 | 5.655086 |
+    | Ridge Regression               | 0.015816 | 7.178238 | 5.690324 |
+    | Support Vector Regressor       | -0.006819| 7.260316 | 5.683155 |
+    | Linear Regression              | -0.036312| 7.365888 | 5.890834 |
+    
+    🏆 **Best Model**: Random forest Regressor (by R² score)""")
+
+    st.success("🏆 Random Forest gives the best R² score for age prediction, though all models have low explanatory power.")
+
+    footer()
+
+
+# ===========================
+# CLUSTERING
+# ===========================
+elif menu == "📌 Clustering Personas":
+    st.header("📌 Clustering Personas (KMeans + UMAP)")
+    st.markdown(
+        "Unsupervised clustering segments employees into groups with different support needs and engagement patterns. "
+        "These personas can inform targeted HR programs and communications."
+    )
+
+    m1, m2 = st.columns(2)
+    with m1:
+        st.metric("Best Algorithm", "KMeans")
+    with m2:
+        st.metric("Silhouette Score", "≈0.54")
+
+    # Clustering techniques
+    st.subheader("Techniques Used: ")
+    st.write(" - Principal Component Analysis (PCA)\n - t-distributed Stochastic Neighbor Embedding (t-SNE)\n - Uniform Manifold Approximation and Projection (UMAP)")
+    st.write("Here is the plot for all three techniques applied on this dataset.")
+    st.image("Images/reduce.png", caption="From these clusters we can see that `UMAP` forms the best and most clear and seggregated clusters out of the three.", use_container_width=True)
+    
+    st.write("The most optimal number of clusters were found to be 7, ranked by silhouette score for each cluster number.")
+    st.image("Images/k_values.png", use_container_width=False)
+
+    st.markdown("### Here is the comparison (silhouette score) for all the models applied for clustering: ")
+    st.write(" - **K-Means Clustering:** 0.5407\n - **Agglomerative Clustering:** 0.5291\n - **DBSCAN:** 0.4824 (6 DBSCAN Clusters, 3 Noise Points)")
+
+    st.markdown("### ✅ From these scores, we can easily say that `K-Means` is clearly our winner.")
+    st.image("Images/algos.png", caption="Clusters formed by the models", use_container_width=True)
+
+    st.image("Images/comparison.png", caption="Feature contrasts across clusters", use_container_width=True)
+    st.divider()
+
+    st.markdown("#### 🔹 Different Personas the respondents can be classified into ⬇️")
+    tabs = st.tabs([
+        "Balanced Support Seekers", "Cautious Engagers", "Policy-Dependent Advocates",
+        "High-Risk Silent Sufferers", "Under-Supported Reluctants",
+        "Stigma-Affected Minimalists", "Empowered Open Advocates"
+    ])
+
+    with tabs[0]:
+        st.markdown("""
+        - Moderately positive across support indicators  
+        - Engage with programs but don’t necessarily lead them  
+        - Respond well to consistent, low-friction resources
+        """)
+
+    with tabs[1]:
+        st.markdown("""
+        - Low openness initially; engage only when **trust** is established  
+        - Prefer private, confidential channels to seek help  
+        - Manager training & anonymous options increase participation
+        """)
+
+    with tabs[2]:
+        st.markdown("""
+        - Engagement tightly tied to clarity of **benefits** and **leave policies**  
+        - Communicate entitlements simply; reduce approval friction  
+        - Policy transparency drives usage
+        """)
+
+    with tabs[3]:
+        st.markdown("""
+        - High treatment needs but low support score  
+        - Avoid disclosure due to stigma; risk of quiet attrition  
+        - Proactive outreach & leadership openness matter most
+        """)
+
+    with tabs[4]:
+        st.markdown("""
+        - Encounter negative consequences without adequate resources  
+        - Need immediate access & advocacy; buddy programs help  
+        - Monitor for burnout signals and follow-ups
+        """)
+
+    with tabs[5]:
+        st.markdown("""
+        - Aware of wellness issues but engage minimally due to stigma  
+        - Normalize MH through stories & frequent internal comms  
+        - Short, low-effort interventions work better
+        """)
+
+    with tabs[6]:
+        st.markdown("""
+        - High openness & advocacy for mental wellness  
+        - Can act as champions/mentors; amplify programs  
+        - Involve them in campaigns and peer support
+        """)
+
+    with st.expander("📎 How to use personas"):
+        st.markdown("""
+        - Design policies that match the needs of different groups (e.g., stronger leave support, clear benefits).
+        - Identify which types of employees may need more proactive mental health support. 
+        - Train managers to **reduce stigma** and handle conversations
+        - Understand how workplace culture and supervision affect treatment-seeking behavior.
+        - For Employees - recognize that others share similar challenges (reduces stigma).""")
+
+    footer()
