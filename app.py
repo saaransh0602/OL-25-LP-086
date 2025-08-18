@@ -75,6 +75,7 @@ section[data-testid="stSidebar"] {
 section[data-testid="stSidebar"] * {
     color: white;
 }
+            
 </style>
 """, unsafe_allow_html=True)
 
@@ -355,7 +356,7 @@ elif menu == "🔎 Exploratory Data Analysis":
         (IMG_DIR / "multivariate2.png", "Correlation matrix (all features)"),
     ], cols=1)
     st.markdown(
-        "Stigma signals (e.g., perceived consequences) are strongly tied to treatment behavior. "
+        "Stigma signals (e.g., perceived consequences) are strongly tied to treatment behavior."
         "These patterns of the correlation matrix (down) also explains why **age regression** is weak: features don't linearly capture age."
     )
 
@@ -691,7 +692,4 @@ elif menu == "📊 Clustering Personas":
         - Understand how workplace culture and supervision affect treatment-seeking behavior.
         - For Employees - recognize that others share similar challenges (reduces stigma).""")
 
-
     footer()
-
-
