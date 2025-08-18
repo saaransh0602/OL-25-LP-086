@@ -64,6 +64,17 @@ html, body, [class*="css"] { font-size: 16px; }
   color: #6b7280;
   font-size: 0.9rem;
 }
+
+/* Sidebar background */
+section[data-testid="stSidebar"] {
+    background-color: #0f172a;
+    color: white;
+}
+
+/* Sidebar text */
+section[data-testid="stSidebar"] * {
+    color: white;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -344,7 +355,7 @@ elif menu == "🔎 Exploratory Data Analysis":
         (IMG_DIR / "multivariate2.png", "Correlation matrix (all features)"),
     ], cols=1)
     st.markdown(
-        "Stigma signals (e.g., perceived consequences) are strongly tied to treatment behavior."
+        "Stigma signals (e.g., perceived consequences) are strongly tied to treatment behavior. "
         "These patterns of the correlation matrix (down) also explains why **age regression** is weak: features don't linearly capture age."
     )
 
@@ -682,4 +693,5 @@ elif menu == "📊 Clustering Personas":
 
 
     footer()
+
 
